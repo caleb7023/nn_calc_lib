@@ -2,5 +2,4 @@
 
 # author : caleb7023
 
-import numpy as np
-
+import ctypes as c
