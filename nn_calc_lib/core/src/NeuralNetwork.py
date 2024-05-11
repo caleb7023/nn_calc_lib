@@ -6,20 +6,21 @@ import numpy as np
 
 import core.src.NeuralNetworkLayer
 
-def __init__(self, network:list=None, propatiy:list=None)->None:
+def __init__(self, layers:list=None, propatiy:list=None)->None:
     """
     network : list of NeuralNetworkLayer objects. Default is None but must be provided if propatiy is not provided
     propatiy: list of NeuralNetworkLayer objects. Default is None but must be provided if network is not provided
     """
-    if network is None:
+    if layers is None:
         if propatiy is None:
             raise ValueError("network must be provided if propatiy is not provided")
-        self._network = []
+        self.layers = []
     else:
-        self._network = network
+        if not layers[0].is_input_layer:
+            raise ValueError("The first layer must be an input layer. Which can be created by creating a layer by setting is_input_layer to True")
+        self.layers = layers
 
 def forward_propagation(self, input_data:np.ndarray)->np.ndarray:
-    self._layers = [input_data]
-    for i in range(len(self._network)):
-        self._layers.append(self._network[i].forward(self._layers[i]))
-    return self._layers[-1]
+    self._layers[0].set_data(input_data)
+    for layer in self._layers[1:]:
+        layer.forward_propagation()
