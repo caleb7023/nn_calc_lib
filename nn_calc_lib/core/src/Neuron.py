@@ -21,6 +21,9 @@ def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input
             self.neuron_weights = np.random.uniform(weights_random_range[0], weights_random_range[1], input_size)
     else:
         self.neuron_weights = neuron_weights
+    
+    if not callable(activation_function):
+        raise ValueError("activation_function must be a callable object")
 
     if neuron_bias is None:
         if bias_random_range is None:
