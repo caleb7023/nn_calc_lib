@@ -10,7 +10,7 @@ from warnings import warn
 
 import core.src.NeuralNetworkLayer as NeuralNetworkLayer
 
-def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input_size:int=None, *, bias_random_range:tuple=None, weights_random_range:tuple=None, activation_function: Callable[..., float])->None:
+def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input_size:int=None, *, bias_random_range:tuple=None, weights_random_range:tuple=None, activation_function: Callable[..., float])->None: # TODO: remove the Callable and set the "random_ranges to (-1, 1) if not provided"
 
     if neuron_weights is None:
         if input_size is None:
