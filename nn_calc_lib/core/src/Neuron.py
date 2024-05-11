@@ -10,7 +10,7 @@ from warnings import warn
 
 import core.src.NeuralNetworkLayer as NeuralNetworkLayer
 
-def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input_size:int=None, *, bias_random_range:tuple=None, weights_random_range:tuple=None, activation_function: Callable[..., float])->None: # TODO: remove the Callable and set the "random_ranges to (-1, 1) if not provided"
+def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input_size:int=None, *, bias_random_range:tuple=(-1, 1), weights_random_range:tuple=(-1, 1), activation_function)->None:
 
     if neuron_weights is None:
         if input_size is None:
@@ -18,9 +18,7 @@ def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input
         elif input_size < 1:
             raise ValueError("input_size must be greater than 0")
         else:
-            if weights_random_range is None:
-                weights_random_range = (-1, 1)
-            elif 2 < len(weights_random_range):
+            if 2 < len(weights_random_range):
                 self.__index_size_warning(len(weights_random_range))
             self._neuron_weights = np.random.uniform(weights_random_range[0], weights_random_range[1], input_size)
     else:
@@ -30,9 +28,7 @@ def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input
         raise ValueError("activation_function must be a callable object")
 
     if neuron_bias is None:
-        if bias_random_range is None:
-            bias_random_range = (-1, 1)
-        elif 2 < len(bias_random_range):
+        if 2 < len(bias_random_range):
             self.__index_size_warning(len(bias_random_range))
         self._neuron_bias = np.random.uniform(bias_random_range[0], bias_random_range[1])
     else:

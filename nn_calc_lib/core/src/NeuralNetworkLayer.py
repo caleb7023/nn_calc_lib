@@ -6,7 +6,7 @@ import core.src.Neuron as Neuron
 
 import numpy as np
 
-def __init__(self, neurons:list=None, *, input_size:int=None, bias_random_range:tuple=None, weights_random_range:tuple=None, neuron_size:int=None, activation_function=None, is_input_layer:bool=False)->None: # TODO: set the random_ranges to "(-1, 1) if not provided"
+def __init__(self, neurons:list=None, *, input_size:int=None, bias_random_range:tuple=(-1, 1), weights_random_range:tuple=(-1, 1), neuron_size:int=None, activation_function=None, is_input_layer:bool=False)->None:
 
     if is_input_layer:
         self._is_input_layer = True
