@@ -44,7 +44,7 @@ def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input
 def __index_size_warning(self, index:int)->None:
     warn(f"index size {index} is above of 2. above it was ignored.")
 
-def forward(self, input_neural_network:NeuralNetworkLayer)->None:
+def forward_propagation(self, input_neural_network:NeuralNetworkLayer)->None:
 
     if input_neural_network.value.ndim != 1:
         raise ValueError("input_data must be a 1D array")
