@@ -12,4 +12,4 @@ def __init__(self, neurons:list=None, *, input_size:int=None, bias_random_range:
         elif input_size < 1:
             raise ValueError("input_size must be greater than 0")
         else:
-            self.__neurons = [Neuron(neuron_bias=None, neuron_weights=None, input_size=input_size, activation_function=activation_function) for i in range(neuron_size)]
+            self._neurons = [Neuron(neuron_bias=None, neuron_weights=None, input_size=input_size, activation_function=activation_function) for i in range(neuron_size)]
