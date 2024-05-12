@@ -4,6 +4,8 @@
 
 import numpy as np
 
+import json as js
+
 import core.src.NeuralNetworkLayer as NeuralNetworkLayer
 
 def __init__(self, layers:list=None, propatiy:list|str=None)->None:
@@ -21,11 +23,12 @@ def __init__(self, layers:list=None, propatiy:list|str=None)->None:
     ```python
     propatiy = [
         {
-            "neuron_size": int|tuple|list, # The size of the input layer's neurons. Any dimension can be provided.
+            "neuron_size"   : int|tuple|list, # The size of the input layer's neurons. Any dimension can be provided.
+            "is_input_layer": True,           # This layer is a input layer so it must be True.
         },
         {
             "neurons"             : list,     # The list of the hidden layer's neurons.
-            "neuron_size"         : int,      # The size of the hidden layer's neurons. Only single dimension can be provided.
+            "neuron_size"         : int,      # The size of the hidden layer's neurons. Only single dimension can be provided. Will be ignored if neurons is provided.
             "activation_function" : callable, # The activation function of the hidden layer's neurons. Will be ignored if neurons is provided.
             "bias_random_range"   : tuple,    # The random range of the hidden layer's neurons bias. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
             "weights_random_range": tuple,    # The random range of the hidden layer's neurons weights. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
@@ -43,7 +46,10 @@ def __init__(self, layers:list=None, propatiy:list|str=None)->None:
     if layers is None:
         if propatiy is None:
             raise ValueError("network must be provided if propatiy is not provided")
-        self.layers = []
+        elif propatiy.__class__ == str:
+            with open(propatiy) as file:
+                propatiy = js.load(file)
+        self.layers = [NeuralNetworkLayer(**layer) for layer in propatiy]
     else:
         if not layers[0].is_input_layer:
             raise ValueError("The first layer must be an input layer. Which can be created by creating a layer by setting is_input_layer to True")

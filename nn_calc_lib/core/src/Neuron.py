@@ -4,8 +4,6 @@
 
 import numpy as np
 
-from typing import Callable
-
 from warnings import warn
 
 import core.src.NeuralNetworkLayer as NeuralNetworkLayer
