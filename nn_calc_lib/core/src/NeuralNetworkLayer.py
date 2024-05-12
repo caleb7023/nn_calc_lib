@@ -15,15 +15,17 @@ def __init__(self, neurons:list=None, *, input_size:int=None, bias_random_range:
     input_size          : The size of the input layer's neurons. Any dimension can be provided if it is a input layer.
     bias_random_range   : The random range of the hidden layer's neurons bias. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
     weights_random_range: The random range of the hidden layer's neurons weights. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
-    neuron_size         : The size of the hidden layer's neurons. Only single dimension can be provided. Will be ignored if neurons is provided.
+    neuron_size         : The size of the hidden layer's neurons. Only single dimension can be provided. If is_input_layer is True, Any dimension can be allowed but it is gonna be converted into a single dimension. Will be ignored if neurons is provided.
     activation_function : The activation function of the hidden layer's neurons. Will be ignored if neurons is provided.
-    is_input_layer      : Is the layer for input or not.
+    is_input_layer      : Is the layer for input or not. If this was set to True, parameters other than neuron_size will be ignored.
     
     """
 
     if is_input_layer:
+        if neuron_size is None:
+            raise ValueError("neuron_size must be provided if is_input_layer is True")
         self._is_input_layer = True
-        self._value = None
+        self._value = np.empty(neuron_size.flatten(), dtype=float)
         self.set_data = self.__set_data
     else:
         if neurons is None:
