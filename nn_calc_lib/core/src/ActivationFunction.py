@@ -5,27 +5,7 @@
 import numpy as np
 
 __all__ = [
-    'step',
-    'ident',
-    'sigmoid',
-    'hard_sigmoid',
-    'log_sigmoid',
-    'swish',
-    'mish',
-    'hard_swish',
-    'relu',
-    'relu6',
-    'leaky_relu',
-    'elu',
-    'celu',
-    'tanh',
-    'tanh_shrink',
-    'tanh_exp',
-    'hard_tanh',
-    'bent_ident',
-    'hard_shrink',
-    'soft_shrink',
-    'threshold'
+    "bent_ident",
 ]
 
 def step        (x:float)->float:return 1 if x >= 0 else 0
