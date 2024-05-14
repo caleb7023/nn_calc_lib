@@ -27,7 +27,6 @@ __all__ = [
     "derivative"
 ]
 
-def step        (x:float)->float:return 1 if 0<=x else 0
 def ident       (x:float)->float:return x
 def sigmoid     (x:float)->float:return 1/(1+np.exp(-x))
 def hard_sigmoid(x:float)->float:return max(0, min(1, 0.2*x+0.5))
@@ -51,9 +50,6 @@ class derivative:
 
     # x is the input
     # y is the output of the normal activation function
-
-    def step(x:float, y:float)->float:
-        return 0
 
     def ident(x:float, y:float)->float:
         return 1
