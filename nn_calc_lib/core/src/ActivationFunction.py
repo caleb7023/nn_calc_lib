@@ -106,15 +106,3 @@ class derivative:
     
     def soft_shrink(x:float, y:float)->float:
         return 0 if -0.5<x<0.5 else 1
-    
-    def _auto(x:float, y:float, activation_function)->float:
-        max_error = 0.0001
-        error = 1
-        activation_function_x = activation_function(x)
-        derivative_result = ((activation_function(x+0.01)-activation_function_x)) * 100
-        dt = 0.02
-        while max_error < error:
-            last_derivative_result = derivative_result
-            derivative_result = (activation_function(x+dt)-activation_function_x)/(dt)
-            error = abs(derivative_result-last_derivative_result)
-            dt /= 2
