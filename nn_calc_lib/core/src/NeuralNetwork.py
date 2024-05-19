@@ -70,5 +70,6 @@ def backword_propagation(self, target_value:np.ndarray, learning_rate:float=0.01
         raise ValueError("target_value must be a 1D array")
     if len(target_value) != len(self.value):
         raise ValueError("target_value must have the same length as the size of the neural network layer")
-    output_layer_losses = 2 * (self.value-target_value)
-    self.layers[-1].backword_propagation(output_layer_losses, learning_rate)
+    losses = 2 * (self.value-target_value)
+    for layer in self.layers:
+        losses = layer.backword_propagation(losses, learning_rate)
