@@ -1,12 +1,7 @@
-#!/user/bin/env
-
 # author : caleb7023
 
 import typing
 import numpy as np
-
-import core.src.NeuralNetwork as NeuralNetwork
-import core.src.ActivationFunction as ActivationFunction
 
 class NeuralNetwork:
     def __init__(self, layers:list=None, propatiy:list|str=None)->None:...
