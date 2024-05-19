@@ -32,6 +32,7 @@ def __init__(self, layers:list=None, propatiy:list|str=None)->None:
             "activation_function" : callable, # The activation function of the hidden layer's neurons. Will be ignored if neurons is provided.
             "bias_random_range"   : tuple,    # The random range of the hidden layer's neurons bias. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
             "weights_random_range": tuple,    # The random range of the hidden layer's neurons weights. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
+            "derivative_function" : callable, # The derivative of the activation function. Will be ignored if neurons or activation_function is provided. Recommended to provide.
         },
         {
             # The same as the second dictionary.
@@ -46,7 +47,7 @@ def __init__(self, layers:list=None, propatiy:list|str=None)->None:
     if layers is None:
         if propatiy is None:
             raise ValueError("network must be provided if propatiy is not provided")
-        elif propatiy.__class__ == str:
+        if propatiy.__class__ == str:
             with open(propatiy) as file:
                 propatiy = js.load(file)
         self.layers = [NeuralNetworkLayer(**layer) for layer in propatiy]
@@ -61,3 +62,13 @@ def forward_propagation(self, input_data:np.ndarray)->np.ndarray:
     for layer in self._layers[1:]:
         layer.forward_propagation()
     self.value = self.layers[-1].value
+
+def backword_propagation(self, target_value:np.ndarray, learning_rate:float=0.01)->None:
+    if self._value is None:
+        raise ValueError("forward_propagation must be called before calling backword_propagation")
+    if target_value.ndim != 1:
+        raise ValueError("target_value must be a 1D array")
+    if len(target_value) != len(self.value):
+        raise ValueError("target_value must have the same length as the size of the neural network layer")
+    output_layer_losses = 2 * (self.value-target_value)
+    self.layers[-1].backword_propagation(output_layer_losses, learning_rate)
