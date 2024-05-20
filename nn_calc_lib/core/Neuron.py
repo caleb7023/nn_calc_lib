@@ -70,7 +70,7 @@ class Neuron:
 
 
 
-    def backward_propagation(self, loss:float, learning_rate:float, input_neural_network_value:np.array)->np.ndarray:
+    def backward_propagation(self, loss:float, learning_rate:float, input_neural_network_value:np.ndarray)->np.ndarray:
         if input_neural_network_value.ndim != 1:
             raise ValueError("input_data must be a 1D array")
         if len(input_neural_network_value) != len(self._neuron_weights):
