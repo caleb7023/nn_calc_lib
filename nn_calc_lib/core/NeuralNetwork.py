@@ -47,18 +47,28 @@ class NeuralNetwork:
 
         """
         if layers is None:
+            # If the propatiy is not provided and the network is not provided at the same time
             if propatiy is None:
-                raise ValueError("network must be provided if propatiy is not provided")
+                raise ValueError("propatiy must be provided if neural network is not provided")
+            # If the propatiy is a path
             if propatiy.__class__ == str:
+                # Load the propatiy from the file
                 with open(propatiy) as file:
                     propatiy = js.load(file)
+
+                # Check the propatiy
                 if propatiy.__class__ != list:
                     raise ValueError("propatiy must be a list")
                 if len(propatiy)<2:
                     raise ValueError("propatiy must have at least two layer")
                 if not propatiy[0]["is_input_layer"]:
                     raise ValueError("The first layer must be an input layer. Which can be created by creating a layer by setting is_input_layer to True")
+                if not all([layer.__class__ == dict for layer in propatiy]):
+                    raise ValueError("All layers must be a dictionary")
+
+            # Create the neural network layers
             self.layers = [NeuralNetworkLayer(**layer) for layer in propatiy]
+
         else:
             if not layers[0].is_input_layer:
                 raise ValueError("The first layer must be an input layer. Which can be created by creating a layer by setting is_input_layer to True")
