@@ -7,7 +7,7 @@ import numpy as np
 from .Neuron import Neuron
 
 class NeuralNetworkLayer:
-    
+
     def __init__(self, neurons:list=None, *, input_size:int=None, bias_random_range:tuple=(-1, 1), weights_random_range:tuple=(-1, 1), neuron_size:int=None, activation_function=None, derivative_function=None, is_input_layer:bool=False)->None:
         """
         
@@ -28,7 +28,7 @@ class NeuralNetworkLayer:
             if neuron_size is None:
                 raise ValueError("neuron_size must be provided if is_input_layer is True")
             self._is_input_layer = True
-            self._value = np.empty(neuron_size.flatten(), dtype=float)
+            self.value = np.zeros(neuron_size, dtype=float)
             self.set_data = self.__set_data
         else:
             if neurons is None:
@@ -45,35 +45,35 @@ class NeuralNetworkLayer:
                                             activation_function=activation_function,
                                             derivative_function=derivative_function,
                     ) for i in range(neuron_size)]
-                    self._value = np.empty(neuron_size, dtype=float)
+                    self.value = np.empty(neuron_size, dtype=float)
             else:
                 self._neurons = neurons
-                self._value = np.empty(len(neurons), dtype=float)
+                self.value = np.empty(len(neurons), dtype=float)
 
     def __mul__(self, other:np.ndarray)->np.ndarray:
         if other.ndim != 1:
             raise ValueError("input_data must be a 1D array")
         if len(other) != len(self.value):
             raise ValueError("input_data must have the same length as the size of the neural network layer")
-        return self._value * other
+        return self.value * other
 
     def __set_data(self, input_data:np.ndarray)->None:
         if input_data.ndim != 1:
-            self._value = input_data.flatten()
+            self.value = input_data.flatten()
         else:
-            self._value = input_data
+            self.value = input_data
 
     def forward_propagation(self, input_data:np.ndarray)->np.ndarray:
         if input_data.ndim != 1:
             raise ValueError("input_data must be a 1D array")
         for neuron in self._neurons: # forward propagation for each neuron in the layer
             neuron.forward_propagation(input_data)
-        self._value = np.array([neuron.value for neuron in self._neurons])
+        self.value = np.array([neuron.value for neuron in self._neurons])
 
     def backword_propagation(self, losses:np.ndarray, learning_rate:float=0.01)->np.ndarray:
         if self._is_input_layer:
             return None
-        if self._value is None:
+        if self.value is None:
             raise ValueError("forward_propagation must be called before calling backword_propagation")
         if losses.ndim != 1:
             raise ValueError("losses must be a 1D array")

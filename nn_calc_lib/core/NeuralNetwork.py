@@ -73,7 +73,7 @@ class NeuralNetwork:
                     raise ValueError("All layers must be a dictionary")
 
             # Create the neural network layers
-            self.layers = [NeuralNetworkLayer(**layer) for layer in propatiy]
+            self.layers = [NeuralNetworkLayer(**{**layer, "input_size":propatiy[i-1]["neuron_size"]}) for i, layer in enumerate(propatiy)]
 
         else:
             if not layers[0].is_input_layer:
