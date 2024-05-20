@@ -6,7 +6,7 @@ import numpy as np
 
 import json as js
 
-import core.src.NeuralNetworkLayer as NeuralNetworkLayer
+from .NeuralNetworkLayer import NeuralNetworkLayer
 
 def __init__(self, layers:list=None, propatiy:list|str=None)->None:
     """

@@ -2,7 +2,7 @@
 
 # author : caleb7023
 
-import core.src.Neuron as Neuron
+from .Neuron import Neuron
 
 import numpy as np
 

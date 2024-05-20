@@ -2,13 +2,13 @@
 
 # author : caleb7023
 
+from .NeuralNetworkLayer import NeuralNetworkLayer
+
 import numpy as np
 
 import inspect
 
 from warnings import warn
-
-import core.src.NeuralNetworkLayer as NeuralNetworkLayer
 
 def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input_size:int=None, *, bias_random_range:tuple=(-1, 1), weights_random_range:tuple=(-1, 1), activation_function, derivative_function)->None:
 

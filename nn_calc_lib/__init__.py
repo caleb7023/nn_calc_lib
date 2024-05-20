@@ -2,5 +2,5 @@
 
 # author : caleb7023
 
-import core.src.NeuralNetwork as NeuralNetwork
-import core.src.ActivationFunction as ActivationFunction
+from . import core
+from .core import NeuralNetwork, ActivationFunction
