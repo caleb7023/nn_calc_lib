@@ -27,7 +27,6 @@ class NeuralNetworkLayer:
         if is_input_layer:
             if neuron_size is None:
                 raise ValueError("neuron_size must be provided if is_input_layer is True")
-            self._is_input_layer = True
             self.value = np.zeros(neuron_size, dtype=float)
             self.set_data = self.__set_data
         else:
@@ -43,12 +42,13 @@ class NeuralNetworkLayer:
                                             bias_random_range=bias_random_range,
                                             weights_random_range=weights_random_range,
                                             activation_function=activation_function,
-                                            derivative_function=derivative_function,
+                                            derivative_function=derivative_function
                     ) for i in range(neuron_size)]
                     self.value = np.empty(neuron_size, dtype=float)
             else:
                 self._neurons = neurons
                 self.value = np.empty(len(neurons), dtype=float)
+        self._is_input_layer = is_input_layer
 
     def __mul__(self, other:np.ndarray)->np.ndarray:
         if other.ndim != 1:
@@ -79,7 +79,7 @@ class NeuralNetworkLayer:
             raise ValueError("losses must be a 1D array")
         if len(losses) != len(self.value):
             raise ValueError("losses must have the same length as the size of the neural network layer")
-        next_layer_losses = np.zeros(len(self._neurons), dtype=float)
+        next_layer_losses = np.zeros(len(self._neurons[0]._neuron_weights), dtype=float)
         for neuron, loss in zip(self._neurons, losses):
-            next_layer_losses += neuron.backword_propagation(loss, learning_rate)
+            next_layer_losses += neuron.backward_propagation(loss, learning_rate)
         return next_layer_losses
