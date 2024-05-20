@@ -9,7 +9,7 @@ import json as js
 from .NeuralNetworkLayer import NeuralNetworkLayer
 
 class NeuralNetwork:
-    
+
     def __init__(self, layers:list=None, propatiy:list|str=None)->None:
         """
 
@@ -52,6 +52,12 @@ class NeuralNetwork:
             if propatiy.__class__ == str:
                 with open(propatiy) as file:
                     propatiy = js.load(file)
+                if propatiy.__class__ != list:
+                    raise ValueError("propatiy must be a list")
+                if len(propatiy)<2:
+                    raise ValueError("propatiy must have at least two layer")
+                if not propatiy[0]["is_input_layer"]:
+                    raise ValueError("The first layer must be an input layer. Which can be created by creating a layer by setting is_input_layer to True")
             self.layers = [NeuralNetworkLayer(**layer) for layer in propatiy]
         else:
             if not layers[0].is_input_layer:
