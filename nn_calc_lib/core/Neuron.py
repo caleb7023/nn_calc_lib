@@ -2,8 +2,6 @@
 
 # author : caleb7023
 
-from .NeuralNetworkLayer import NeuralNetworkLayer
-
 import numpy as np
 
 import inspect
@@ -54,34 +52,34 @@ def __index_size_warning(self, index:int)->None:
 
 
 
-def forward_propagation(self, input_neural_network:NeuralNetworkLayer, train:bool=False)->None:
+def forward_propagation(self, input_neural_network_value:np.ndarray, train:bool=False)->None:
 
-    if input_neural_network.value.ndim != 1:
+    if input_neural_network_value.ndim != 1:
         raise ValueError("input_data must be a 1D array")
     
-    if len(input_neural_network.value) != len(self._neuron_weights):
+    if len(input_neural_network_value) != len(self._neuron_weights):
         raise ValueError("input_data must have the same length as neuron_weights")
     
-    sum_ = np.sum(input_neural_network*self._neuron_weights)
+    sum_ = np.sum(input_neural_network_value*self._neuron_weights)
     self.value = self._activation_function(sum_ + self._neuron_bias)
     if self.derivative_function is None:
-        self.derivative = __derivative(input_neural_network.value, self.value, self._activation_function)
+        self.derivative = __derivative(input_neural_network_value, self.value, self._activation_function)
     else:
-        self.derivative = self._derivative_function(input_neural_network.value, self.value)
+        self.derivative = self._derivative_function(input_neural_network_value, self.value)
 
 
 
-def backward_propagation(self, loss:float, learning_rate:float, input_neural_network:NeuralNetworkLayer)->np.ndarray:
-    if input_neural_network.value.ndim != 1:
+def backward_propagation(self, loss:float, learning_rate:float, input_neural_network_value:np.array)->np.ndarray:
+    if input_neural_network_value.ndim != 1:
         raise ValueError("input_data must be a 1D array")
-    if len(input_neural_network.value) != len(self._neuron_weights):
+    if len(input_neural_network_value) != len(self._neuron_weights):
         raise ValueError("input_data must have the same length as neuron_weights")
     next_layer_losses = np.zeros(len(self._neuron_weights), dtype=float)
-    for i, neuron in enumerate(input_neural_network._neurons):
+    for i, neuron in enumerate(input_neural_network_value):
         if self.derivative_function is None:
-            derivative = __derivative(input_neural_network.value, self.value, self._activation_function)
+            derivative = __derivative(input_neural_network_value, self.value, self._activation_function)
         else:
-            derivative = self._derivative_function(input_neural_network.value, self.value)
+            derivative = self._derivative_function(input_neural_network_value, self.value)
         next_layer_losses[i] = loss*derivative*self._neuron_weights[i]
         self._neuron_weights[i] -= learning_rate*loss*derivative*neuron.value
     self._neuron_bias -= learning_rate*loss*derivative
