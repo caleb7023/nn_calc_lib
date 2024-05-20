@@ -59,11 +59,17 @@ class NeuralNetwork:
                 # Check the propatiy
                 if propatiy.__class__ != list:
                     raise ValueError("propatiy must be a list")
-                if len(propatiy)<2:
+                
+                elif len(propatiy)<2:
                     raise ValueError("propatiy must have at least two layer")
-                if not propatiy[0]["is_input_layer"]:
+                
+                elif not propatiy[0]["is_input_layer"]:
                     raise ValueError("The first layer must be an input layer. Which can be created by creating a layer by setting is_input_layer to True")
-                if not all([layer.__class__ == dict for layer in propatiy]):
+                
+                elif not all([layer.get("is_input_layer") in [None, False] for layer in propatiy[1:]]):
+                    raise ValueError("The other layers must have is_input_layer set to None or False")
+                
+                elif not all([layer.__class__ == dict for layer in propatiy]):
                     raise ValueError("All layers must be a dictionary")
 
             # Create the neural network layers
