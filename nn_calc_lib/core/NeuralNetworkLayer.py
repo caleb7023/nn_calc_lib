@@ -57,12 +57,6 @@ class NeuralNetworkLayer:
             raise ValueError("input_data must have the same length as the size of the neural network layer")
         return self.value * other
 
-    def __set_data(self, input_data:np.ndarray)->None:
-        if input_data.ndim != 1:
-            self.value = input_data.flatten()
-        else:
-            self.value = input_data
-
     def forward_propagation(self, input_data:np.ndarray)->np.ndarray:
         if input_data.ndim != 1:
             raise ValueError("input_data must be a 1D array")
