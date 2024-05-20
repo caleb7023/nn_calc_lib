@@ -34,7 +34,7 @@ class NeuralNetwork:
                 "activation_function" : callable, # The activation function of the hidden layer's neurons. Will be ignored if neurons is provided.
                 "bias_random_range"   : tuple,    # The random range of the hidden layer's neurons bias. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
                 "weights_random_range": tuple,    # The random range of the hidden layer's neurons weights. Will be ignored if neurons is provided. If not provided, (-1, 1) will be used.
-                "derivative_function" : callable, # The derivative of the activation function. Will be ignored if neurons or activation_function is provided. Recommended to provide.
+                "derivative_function" : callable, # The derivative of the activation function. Will be ignored if neurons or activation_function is provided. Recommended to provide if it is a function not lerated from the activation function.
             },
             {
                 # The same as the second dictionary.
@@ -43,7 +43,7 @@ class NeuralNetwork:
         ]
         ```
 
-        Or you can input a path as a string.
+        Or you can input a path as a string. (In development)
 
         """
         if layers is None:
