@@ -3,14 +3,13 @@
 # author : caleb7023
 
 import numpy as np
-
 import inspect
-
 from warnings import warn
 
 class Neuron:
     def __init__(self, neuron_bias:float=None, neuron_weights:np.ndarray=None, input_size:int=None, *, bias_random_range:tuple=(-1, 1), weights_random_range:tuple=(-1, 1), activation_function, derivative_function)->None:
 
+        # Checking parameters for error & warnings
         if derivative_function is not None:
             if not callable(derivative_function):
                 raise ValueError("derivative_function must be a callable object")
@@ -19,11 +18,11 @@ class Neuron:
                 if arg_len < 2:
                     raise ValueError("derivative_function must have 2 parameters.\nThe first one is going to be the input and the second one is going to be the output of the activation function.")
                 if 2 < arg_len:
-                    self.__index_size_warning(arg_len)
-
+                    warn(f"input size of {derivative_function.__name__} is above of 2. above it is ignored.")
         if not callable(activation_function):
             raise ValueError("activation_function must be a callable object")
 
+        # Saving weights
         if neuron_weights is None:
             if input_size is None:
                 raise ValueError("input_size must be provided if neuron_weights is not provided")
@@ -35,6 +34,7 @@ class Neuron:
         else:
             self._neuron_weights = neuron_weights
 
+        # Saving bias
         if neuron_bias is None:
             if 2 < len(bias_random_range):
                 self.__index_size_warning(len(bias_random_range))
@@ -42,25 +42,27 @@ class Neuron:
         else:
             self._neuron_bias = neuron_bias
 
-        self._derivative_function = derivative_function
+        # Saving functions
         self._activation_function = activation_function
+        self._derivative_function = derivative_function
         self.value = None
 
 
-
+    # function for warning about index size of the parameters random_range
     def __index_size_warning(self, index:int)->None:
-        warn(f"index size {index} is above of 2. above it was ignored.")
+        warn(f"index size {index} is above of 2. above it is ignored.")
 
 
 
     def forward_propagation(self, input_neural_network_value:np.ndarray)->None:
 
+        # Checking parameters for error
         if input_neural_network_value.ndim != 1:
             raise ValueError("input_data must be a 1D array")
-        
         if len(input_neural_network_value) != len(self._neuron_weights):
             raise ValueError(f"input_data must have the same length as neuron_weights. The input_data length is {len(input_neural_network_value)} and the neuron_weights length (the input data size that was set) is {len(self._neuron_weights)}.")
         
+        # Forward propagation
         self.last_input = input_neural_network_value
         self.sum_ = np.sum(input_neural_network_value*self._neuron_weights)
         self.value = self._activation_function(self.sum_ + self._neuron_bias)
