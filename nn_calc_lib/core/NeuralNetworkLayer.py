@@ -28,7 +28,6 @@ class NeuralNetworkLayer:
             if neuron_size is None:
                 raise ValueError("neuron_size must be provided if is_input_layer is True")
             self.value = np.zeros(neuron_size, dtype=float)
-            self.set_data = self.__set_data
         else:
             if neurons is None:
                 if input_size is None:

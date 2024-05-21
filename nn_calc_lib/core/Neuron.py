@@ -70,9 +70,9 @@ class Neuron:
     def backward_propagation(self, loss:float, learning_rate:float)->np.ndarray:
         next_layer_losses = np.zeros(len(self._neuron_weights), dtype=float)
         if self._derivative_function is None:
-            derivative = __derivative(self.sum_, self.value, self._activation_function)
+            derivative = __derivative(self.sum_ + self._neuron_bias, self.value, self._activation_function)
         else:
-            derivative = self._derivative_function(self.sum_, self.value)
+            derivative = self._derivative_function(self.sum_ + self._neuron_bias, self.value)
         next_layer_losses = loss*derivative*self._neuron_weights
         self._neuron_weights -= learning_rate*loss*derivative*self.last_input
         self._neuron_bias -= learning_rate*loss*derivative
