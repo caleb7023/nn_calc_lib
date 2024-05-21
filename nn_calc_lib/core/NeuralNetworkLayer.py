@@ -59,13 +59,22 @@ class NeuralNetworkLayer:
     def backword_propagation(self, losses:np.ndarray, learning_rate:float=0.01)->np.ndarray:
         if self._is_input_layer:
             return None
+        
+        # Checking parameters for error
         if self.value is None:
             raise ValueError("forward_propagation must be called before calling backword_propagation")
         if losses.ndim != 1:
             raise ValueError("losses must be a 1D array")
         if len(losses) != len(self.value):
             raise ValueError("losses must have the same length as the size of the neural network layer")
+        
+        # Backward propagation
+        # Setting the next layer's losses
         next_layer_losses = np.zeros(len(self._neurons[0]._neuron_weights), dtype=float)
+
+        # Calulating the next layer's losses and updating the weights and biases for each neuron
         for neuron, loss in zip(self._neurons, losses):
             next_layer_losses += neuron.backward_propagation(loss, learning_rate)
+
+        # Returning the next layer's losses
         return next_layer_losses

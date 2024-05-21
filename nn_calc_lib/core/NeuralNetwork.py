@@ -10,7 +10,7 @@ from .NeuralNetworkLayer import NeuralNetworkLayer
 
 class NeuralNetwork:
 
-    def __init__(self, layers:list=None, propatiy:list|str=None)->None:
+    def __init__(self, layers:list[dict]=None, propatiy:list|str=None)->None:
         """
 
         ### Parameters
@@ -56,7 +56,7 @@ class NeuralNetwork:
                 with open(propatiy) as file:
                     propatiy = js.load(file)
 
-                # Check the propatiy
+                # Check the propatiy for errors
                 if propatiy.__class__ != list:
                     raise ValueError("propatiy must be a list")
 
@@ -91,12 +91,17 @@ class NeuralNetwork:
         self.value = self.layers[-1].value
 
     def backward_propagation(self, target_value:np.ndarray, learning_rate:float=0.01)->None:
+        # Check for errors
         if self.value is None:
             raise ValueError("forward_propagation must be called before calling backword_propagation")
         if target_value.ndim != 1:
             raise ValueError("target_value must be a 1D array")
         if len(target_value) != len(self.value):
             raise ValueError("target_value must have the same length as the size of the neural network layer")
+        
+        # Calculate the loss of the output layer
         losses = 2 * (self.value-target_value)
+
+        # Backward propagation
         for layer in self.layers[1:][::-1]:
             losses = layer.backword_propagation(losses, learning_rate)

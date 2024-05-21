@@ -62,22 +62,33 @@ class Neuron:
         if len(input_neural_network_value) != len(self._neuron_weights):
             raise ValueError(f"input_data must have the same length as neuron_weights. The input_data length is {len(input_neural_network_value)} and the neuron_weights length (the input data size that was set) is {len(self._neuron_weights)}.")
         
-        # Forward propagation
+        # Save the data for back propagation
         self.last_input = input_neural_network_value
-        self.sum_ = np.sum(input_neural_network_value*self._neuron_weights)
-        self.value = self._activation_function(self.sum_ + self._neuron_bias)
+
+        # Forward propagation
+        self.func_input = np.sum(input_neural_network_value*self._neuron_weights)
+        self.func_input += self._neuron_bias
+        self.value = self._activation_function(self.func_input)
 
 
 
-    def backward_propagation(self, loss:float, learning_rate:float)->np.ndarray:
-        next_layer_losses = np.zeros(len(self._neuron_weights), dtype=float)
-        if self._derivative_function is None:
-            derivative = __derivative(self.sum_ + self._neuron_bias, self.value, self._activation_function)
-        else:
-            derivative = self._derivative_function(self.sum_ + self._neuron_bias, self.value)
+    def backward_propagation(self, loss:float, derivative:float=None, *,learning_rate:float)->np.ndarray:
+
+        # Calculate the derivative if derivative is not provided
+        if derivative is None:
+            if self._derivative_function is None:
+                derivative = __derivative(self.func_input + self._neuron_bias, self.value, self._activation_function)
+            else:
+                derivative = self._derivative_function(self.func_input + self._neuron_bias, self.value)
+
+        # Calculate the loss of the next layer
         next_layer_losses = loss*derivative*self._neuron_weights
+
+        # Update the weights and bias
         self._neuron_weights -= learning_rate*loss*derivative*self.last_input
         self._neuron_bias -= learning_rate*loss*derivative
+
+        # Return the loss of the next layer
         return next_layer_losses
 
 
