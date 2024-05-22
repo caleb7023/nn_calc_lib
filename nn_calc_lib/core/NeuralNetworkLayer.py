@@ -56,10 +56,7 @@ class NeuralNetworkLayer:
         self.actfunc_input = (self.neurons_weights * input_data[:, None]).sum(axis=0) + self.neurons_biases
         self.value = self.activation_function(self.actfunc_input)
 
-    def backword_propagation(self, losses:np.ndarray, learning_rate:float=0.01)->np.ndarray:
-        if self.is_input_layer:
-            return None
-        
+    def backward_propagation(self, losses:np.ndarray, learning_rate:float=0.01)->np.ndarray:
         # Checking parameters for error
         if self.value is None:
             raise ValueError("forward_propagation must be called before calling backword_propagation")

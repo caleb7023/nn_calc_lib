@@ -104,4 +104,4 @@ class NeuralNetwork:
 
         # Backward propagation
         for layer in self.layers[1:][::-1]:
-            losses = layer.backword_propagation(losses, learning_rate)
+            losses = layer.backward_propagation(losses, learning_rate)
