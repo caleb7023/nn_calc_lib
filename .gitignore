@@ -1,4 +1,3 @@
 nn_calc_lib/core/src/output
 __pycache__
 .vscode
-nn_calc_lib_cuda
