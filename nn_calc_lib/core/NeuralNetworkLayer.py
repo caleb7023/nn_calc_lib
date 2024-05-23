@@ -45,6 +45,8 @@ class NeuralNetworkLayer:
                 self.neurons_biases  = neuron_bias
             self.activation_function = activation_function
             self.derivative_function = derivative_function
+            self.neurons_weights_update = np.zeros_like(self.neurons_weights)
+            self.neurons_biases_update  = np.zeros_like(self.neurons_biases)
         self.value = None
         self.is_input_layer = is_input_layer
 
@@ -71,14 +73,21 @@ class NeuralNetworkLayer:
         else:
             derivative = __derivative(self.actfunc_input, self.value, self.activation_function)
 
-        gradient = derivative * losses * learning_rate # Shape: (neuron_size)
+        gradient = derivative * losses
+        gradient_update = gradient * learning_rate
         # Calculate the losses for the previous layer
         layer_losses = (gradient[None, :] * self.neurons_weights).sum(axis=1)
         # Update the weights and biases
-        self.neurons_weights -= self.last_input[:, None] * gradient
-        self.neurons_biases  -= gradient
+        self.neurons_weights_update -= self.last_input[:, None] * gradient_update
+        self.neurons_biases_update  -= gradient_update
         # Return the losses for the previous layer
         return layer_losses
+    
+    def update(self)->None:
+        self.neurons_weights += self.neurons_weights_update
+        self.neurons_biases  += self.neurons_biases_update
+        self.neurons_weights_update = np.zeros_like(self.neurons_weights)
+        self.neurons_biases_update  = np.zeros_like(self.neurons_biases)
 
 
 def __derivative(x:np.ndarray, y:np.ndarray, activation_function)->np.ndarray:

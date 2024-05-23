@@ -84,10 +84,9 @@ class NeuralNetwork:
     def forward_propagation(self, input_data:cp.ndarray)->cp.ndarray:
         if input_data.ndim != 1:
             raise ValueError("input_data must be a 1D array")
-        data = input_data.astype(float)
-        for layer in self.layers[1:]:
-            layer.forward_propagation(data)
-            data = layer.value
+        self.layers[0].value = input_data.astype(float)
+        for i, layer in enumerate(self.layers[1:]):
+            layer.forward_propagation(self.layers[i].value)
         self.value = self.layers[-1].value
 
     def backward_propagation(self, target_value:cp.ndarray, learning_rate:float=0.01)->None:
@@ -98,10 +97,14 @@ class NeuralNetwork:
             raise ValueError("target_value must be a 1D array")
         if len(target_value) != len(self.value):
             raise ValueError("target_value must have the same length as the size of the neural network layer")
-        
+
         # Calculate the loss of the output layer
         losses = 2 * (self.value-target_value)
 
         # Backward propagation
         for layer in self.layers[1:][::-1]:
             losses = layer.backward_propagation(losses, learning_rate)
+    
+    def update(self)->None:
+        for layer in self.layers[1:]:
+            layer.update()
