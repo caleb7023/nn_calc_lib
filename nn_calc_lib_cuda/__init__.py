@@ -2,5 +2,6 @@
 
 # author : caleb7023
 
-from .core.NeuralNetwork import NeuralNetwork
+from .core.Network import Network
+from .core import NetworkLayer
 from .core import ActivationFunction

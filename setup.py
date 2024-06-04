@@ -11,6 +11,6 @@ setup(
     author="caleb7023",
     description="A lib for neural network calculation",
     install_requires=[
-        "numpy",
+        "cupy",
     ],
 )

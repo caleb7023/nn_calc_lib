@@ -5,7 +5,6 @@
 import cupy as cp
 
 __all__ = [
-    "step",
     "ident",
     "sigmoid",
     "hard_sigmoid",
