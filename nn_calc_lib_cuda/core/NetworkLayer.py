@@ -52,15 +52,15 @@ class Activation:
             raise ValueError("activation_function must be a callable")
         if derivative_function is not None and callable(derivative_function):
             raise ValueError("derivative_function must be a callable")
-        if type(bias_random_range)!=tuple and type(bias_random_range)!=list:
+        if not isinstance(bias_random_range, (tuple, list)):
             raise ValueError("bias_random_range must be a tuple/list")
-        if type(weights_random_range)!=tuple and type(weights_random_range)!=list:
+        if not isinstance(weights_random_range, (tuple, list)):
             raise ValueError("weights_random_range must be a tuple/list")
 
         # Check tuple/list parameter values are correct type
-        if not all([type(i)==float for i in bias_random_range]):
+        if any([type(i)!=float for i in bias_random_range]):
             raise ValueError("bias_random_range must be a tuple/list of floats")
-        if not all([type(i)==float for i in weights_random_range]):
+        if any([type(i)!=float for i in weights_random_range]):
             raise ValueError("weights_random_range must be a tuple/list of floats")
         
         # Check the parameter values are correct
@@ -130,7 +130,7 @@ class Activation:
 
 class __Convolution:
 
-    def __init__(self, input_size:tuple[int], input_channels:int, channels:int, kernels_size:tuple[int], activation_function, derivative_function=None, kernel_random_range:tuple[float]=(-1, 1))->None:
+    def __init__(self, input_size:tuple[int], input_channels:int, channels:int, kernels_size:tuple[int], padding:int, stride:int, dilation:int, activation_function, derivative_function=None, kernel_random_range:tuple[float]=(-1, 1))->None:
         """
         
         ### Parameters
@@ -151,27 +151,33 @@ class __Convolution:
         # Check for errors in the parameters
 
         # Check parameter is the correct type
-        if type(input_size)!=tuple and type(input_size)!=list:
-            raise ValueError("input_size must be a tuple/list")
         if type(input_channels)!=int:
             raise ValueError("input_channels must be an integer")
         if type(channels)!=int:
             raise ValueError("channels must be an integer")
-        if type(kernels_size)!= tuple and type(kernels_size)!=list:
+        if type(padding)!=int:
+            raise ValueError("padding must be an integer")
+        if type(stride)!=int:
+            raise ValueError("stride must be an integer")
+        if type(dilation)!=int:
+            raise ValueError("dilation must be an integer")
+        if not isinstance(input_size, (tuple, list)):
+            raise ValueError("input_size must be a tuple/list")
+        if not isinstance(kernels_size, (tuple, list)):
             raise ValueError("kernel_size must be a tuple/list")
+        if not isinstance(kernel_random_range, (tuple, list)):
+            raise ValueError("kernel_random_range must be a tuple/list")
         if type(activation_function)!=callable:
             raise ValueError("activation_function must be a callable")
-        if type(kernel_random_range)!=tuple and type(kernel_random_range)!=list:
-            raise ValueError("kernel_random_range must be a tuple/list")
         if derivative_function is not None and type(derivative_function)!=callable:
             raise ValueError("derivative_function must be a callable")
 
         # Check tuple/list parameter values are correct type
-        if not all([type(i)==int for i in input_size]):
+        if any([type(i)!=int for i in input_size]):
             raise ValueError("input_size must be a tuple/list of integers")
-        if not all([type(i)==int for i in kernels_size]):
+        if any([type(i)!=int for i in kernels_size]):
             raise ValueError("kernel_size must be a tuple/list of integers")
-        if not all([type(i)==float for i in kernel_random_range]):
+        if any([type(i)!=float for i in kernel_random_range]):
             raise ValueError("kernel_random_range must be a tuple/list of floats")
         
         # Check the parameter values are correct
@@ -202,8 +208,6 @@ class __Convolution:
         self.last_input = input_data
         self.convolutions = cp.tensordot(self.kernels, input_data, axes=([2, 3, 4], [0, 1, 2])) + self.biases[:, None, None]
         self.value = self.activation_function(self.convolutions)
-        
-
 
     def backward(self, losses:cp.ndarray, learning_rate:float=0.01)->cp.ndarray:
         pass
