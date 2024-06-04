@@ -20,18 +20,17 @@ class Input:
 
 class Activation:
 
-    def __init__(self, inputs:int, *, neurons:int, activation_function, derivative_function=None, bias_random_range:tuple[float]=(-1, 1), weights_random_range:tuple[float]=(-1, 1))->None:
+    def __init__(self, inputs:int, *, neurons:int, activation_function:ac.ActivationFunction, bias_random_range:tuple[float]=(-1, 1), weights_random_range:tuple[float]=(-1, 1))->None:
         """
         
         ### Parameters
 
         ```plaintext
         >Required
-         [int]         inputs              : The size of the input layer's neurons.
-         [int]         neurons             : The size of the hidden layer's neurons.
-         [callable]    activation_function : The activation function of the hidden layer's neurons.
+         [int]               inputs              : The size of the input layer's neurons.
+         [int]               neurons             : The size of the hidden layer's neurons.
+         [ActivationFunction]activation_function : The activation function of the hidden layer's neurons. Can be chosen from the ActivationFunction.py.
         >Not Required
-         [callable]    derivative_function : The derivative of the activation function. Recommended to provide if the function is original.
          [tuple[float]]bias_random_range   : The random range of the hidden layer's neuron's bias. If not provided, (-1, 1) will be used.
          [tuple[float]]weights_random_range: The random range of the hidden layer's neuron's weights. If not provided, (-1, 1) will be used.
         ```
@@ -48,10 +47,6 @@ class Activation:
             raise ValueError("inputs must be an integer")
         if type(neurons)!=int:
             raise ValueError("neurons must be an integer")
-        if not callable(activation_function):
-            raise ValueError("activation_function must be a callable")
-        if derivative_function is not None and callable(derivative_function):
-            raise ValueError("derivative_function must be a callable")
         if not isinstance(bias_random_range, (tuple, list)):
             raise ValueError("bias_random_range must be a tuple/list")
         if not isinstance(weights_random_range, (tuple, list)):
@@ -77,12 +72,10 @@ class Activation:
         self.neurons_weights = cp.random.uniform(weights_random_range[0], weights_random_range[1], (inputs, neurons))
         self.neurons_biases  = cp.random.uniform(bias_random_range   [0], bias_random_range   [1],          neurons )
 
-        self.activation_function = activation_function
-
-        if derivative_function is None and activation_function.__name__ in ac.__all__:
-            self.derivative_function = getattr(ac.derivative, activation_function.__name__)
-        else:
-            derivative_function = derivative_function
+        self.activation_function = activation_function.fxn
+        if activation_function.derivative is None:
+            warn("derivative_function is not provided. Using numerical derivative instead wcich may reduce performance")
+        self.derivative_function = activation_function.derivative
 
         self.neurons_weights_update = cp.zeros((inputs, neurons))
         self.neurons_biases_update  = cp.zeros(         neurons )
