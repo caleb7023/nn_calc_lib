@@ -130,7 +130,7 @@ class Activation:
 
 class __Convolution:
 
-    def __init__(self, input_size:tuple[int], input_channels:int, channels:int, kernels_size:tuple[int], padding:int, stride:int, dilation:int, activation_function, derivative_function=None, kernel_random_range:tuple[float]=(-1, 1))->None:
+    def __init__(self, input_size:tuple[int], input_channels:int, channels:int, kernels_size:tuple[int], padding:int|tuple[int]=0, stride:int=0, dilation:int=0, *, activation_function, derivative_function=None, kernel_random_range:tuple[float]=(-1, 1))->None:
         """
         
         ### Parameters
@@ -143,8 +143,11 @@ class __Convolution:
          [tuple[int]]kernel_size         : The size of the kernel. Must be same lenght as input_size.
          [callable]  activation_function : The activation function of the hidden layer's neurons.
         >Not Required
-         [callable]  derivative_function : The derivative of the activation function. Recommended to provide for better performance.
-         [tuple[int]]kernel_random_range : The random range of the hidden layer's neuron's bias. If not provided, (-1, 1) will be used.
+         [callable]      derivative_function : The derivative of the activation function. Recommended to provide for better performance.
+         [tuple[int]]    kernel_random_range : The random range of the hidden layer's neuron's bias. If not provided, (-1, 1) will be used.
+         [tuple[int]|int]padding             : The padding of the convolution layer. If not provided, 0 will be used. -1 for auto padding.
+         [int]           stride              : The stride of the convolution layer. If not provided, 0 will be used.
+         [int]           dilation            : The dilation of the convolution layer. If not provided, 0 will be used.
         ```
 
         """
@@ -155,12 +158,12 @@ class __Convolution:
             raise ValueError("input_channels must be an integer")
         if type(channels)!=int:
             raise ValueError("channels must be an integer")
-        if type(padding)!=int:
-            raise ValueError("padding must be an integer")
         if type(stride)!=int:
             raise ValueError("stride must be an integer")
         if type(dilation)!=int:
             raise ValueError("dilation must be an integer")
+        if not isinstance(padding, (int, tuple, list)):
+            raise ValueError("padding must be an integer or a tuple")
         if not isinstance(input_size, (tuple, list)):
             raise ValueError("input_size must be a tuple/list")
         if not isinstance(kernels_size, (tuple, list)):
@@ -174,29 +177,43 @@ class __Convolution:
 
         # Check tuple/list parameter values are correct type
         if any([type(i)!=int for i in input_size]):
-            raise ValueError("input_size must be a tuple/list of integers")
+            raise ValueError("input_size must be a tuple of integers")
         if any([type(i)!=int for i in kernels_size]):
-            raise ValueError("kernel_size must be a tuple/list of integers")
+            raise ValueError("kernel_size must be a tuple of integers")
         if any([type(i)!=float for i in kernel_random_range]):
-            raise ValueError("kernel_random_range must be a tuple/list of floats")
+            raise ValueError("kernel_random_range must be a tuple of floats")
+        if isinstance(padding, (tuple, list)) and any([type(i)!=int for i in padding]):
+            raise ValueError("padding must be a tuple of integers if it is a tuple")
         
         # Check the parameter values are correct
-        if len(input_size) != len(kernels_size):
-            raise ValueError("input_size must have the same length as the kernel_size")
+        if len(kernels_size) != len(input_size):
+            raise ValueError("kernel_size must have the same length as input_size")
+        if len(padding) != len(input_size):
+            raise ValueError("padding must have the same length as input_size")
         if len(kernel_random_range) != 2:
             raise ValueError("kernel_random_range must have 2 values")
+        if padding != -1 and padding < 0:
+            raise ValueError("padding must be greater than or equal to 0")
+        if stride < 0:
+            raise ValueError("stride must be greater than or equal to 0")
+        if dilation < 0:
+            raise ValueError("dilation must be greater than or equal to 0")
         if input_channels <= 0:
             raise ValueError("input_channels must be greater than 0")
         if channels <= 0:
             raise ValueError("channels must be greater than 0")
-        if not all([0 < i for i in input_size]):
+        if any([i <= 0 for i in input_size]):
             raise ValueError("input_size must have all positive values")
-        if not all([0 < i for i in kernels_size]):
+        if any([i <= 0 for i in kernels_size]):
             raise ValueError("kernel_size must have all positive values")
         
         # Create kernels and biases for the layer
         self.kernels = cp.random.uniform(kernel_random_range[0], kernel_random_range[1], (channels,)+kernels_size+(input_channels,))
         self.biases  = cp.random.uniform(kernel_random_range[0], kernel_random_range[1],  channels                                 )
+
+        self.padding = padding if padding!=-1 else [i//2 for i in input_size]
+        self.stride  = stride
+        self.dilation= dilation
 
         self.activation_function = activation_function
         self.derivative_function = derivative_function
@@ -205,9 +222,7 @@ class __Convolution:
 
     def forward(self, input_data:cp.ndarray)->cp.ndarray:
         # Forward propagation for the layer
-        self.last_input = input_data
-        self.convolutions = cp.tensordot(self.kernels, input_data, axes=([2, 3, 4], [0, 1, 2])) + self.biases[:, None, None]
-        self.value = self.activation_function(self.convolutions)
+        src_img = cp.pad(input_data, self.padding)
 
     def backward(self, losses:cp.ndarray, learning_rate:float=0.01)->cp.ndarray:
         pass
