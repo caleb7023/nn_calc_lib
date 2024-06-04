@@ -4,8 +4,6 @@
 
 import cupy as cp
 
-import pickle as pk
-
 from . import NetworkLayer
 
 class Network:
@@ -75,10 +73,6 @@ class Network:
     def update(self)->None:
         for layer in self.layers[1:]:
             layer.update()
-    
-    def save(self, path:str)->None:
-        with open(path, "wb") as file:
-            pk.dump(self, file)
 
 
 
